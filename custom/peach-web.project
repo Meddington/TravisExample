@@ -1,0 +1,5 @@
+{
+  "Name": "FlaskRestTarget",
+  "_UseDefaults": true,
+  "LogSinks": [ { "Address":"0.0.0.0", "Port":514 } ]
+}

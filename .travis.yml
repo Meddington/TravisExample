@@ -1,0 +1,23 @@
+# Example Travis Config
+#
+language: python
+python:
+  - "2.7"
+#
+# command to install dependencies
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq openssh
+#
+#
+install: 
+  - pip install -r custom/requirements.txt
+  - pip install -r flask_rest_target/requirements.txt
+  - pip install -r generic/requirements.txt
+  - pip install -r peachproxy/requirements.txt
+  - python peachproxy/setup.py -q install
+#
+# command to run tests
+script: pytest
+#
+# end

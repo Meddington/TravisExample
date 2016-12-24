@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<title>Example Flask Rest Target</title>
+	</head>
+	<body>
+		
+		<script>
+			
+			function get_users()
+			{
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET", "http://127.0.0.1:5000/api/users", false);
+				xhr.send();
+				
+				console.log(xhr.status);
+				console.log(xhr.statusText);
+			}
+			
+			function get_user(id)
+			{
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET", "http://127.0.0.1:5000/api/users/" + id, false);
+				xhr.send();
+				
+				console.log(xhr.status);
+				console.log(xhr.statusText);
+			}
+			
+			function delete_user(id)
+			{
+				var xhr = new XMLHttpRequest();
+				xhr.open("DELETE", "http://127.0.0.1:5000/api/users/" + id, false);
+				xhr.send();
+				
+				console.log(xhr.status);
+				console.log(xhr.statusText);
+			}
+			
+			function delete_user_by_name(name)
+			{
+				var xhr = new XMLHttpRequest();
+				xhr.open("DELETE", "http://127.0.0.1:5000/api/users?user=" + name, false);
+				xhr.send();
+				
+				console.log(xhr.status);
+				console.log(xhr.statusText);
+			}
+			
+			function create_user()
+			{
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", "http://127.0.0.1:5000/api/users", false);
+				xhr.send("{\"user\":\"dd\", \"first\":\"mike\", \"last\":\"smith\", \"password\":\"hello\"}");
+				r = JSON.parse(xhr.responseText);
+				
+				console.log(xhr.status);
+				console.log(xhr.statusText);
+				
+				return r.user_id;
+			}
+			
+			function update_user(id)
+			{
+				var xhr = new XMLHttpRequest();
+				xhr.open("PUT", "http://127.0.0.1:5000/api/users/"+id, false);
+				xhr.send("{\"user\":\"dd\", \"first\":\"john\", \"last\":\"smith\", \"password\":\"hello\"}");
+				
+				console.log(xhr.status);
+				console.log(xhr.statusText);
+			}
+			
+			function do_create_user()
+			{
+				id = create_user();
+				get_user(id);
+				delete_user(id);
+			}
+			
+			function do_update_user()
+			{
+				id = create_user();
+				update_user(id);
+				get_user(id);
+				delete_user(id);
+			}
+			
+			function do_setup()
+			{
+				delete_user(2);
+				delete_user_by_name('dd');
+			}
+			
+			function do_teardown()
+			{
+				delete_user(2);
+				delete_user_by_name('dd');
+			}
+			
+		</script>
+		
+		<button onclick="do_setup();">Test Setup</button>
+		<button onclick="get_users();">Get Users</button>
+		<button onclick="do_create_user();">Create User</button>
+		<button onclick="do_update_user();">Update User</button>
+		<button onclick="do_teardown();">Test Teardown</button>
+		
+	</body>
+</html>

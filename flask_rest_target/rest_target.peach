@@ -1,0 +1,72 @@
+{
+  "name": "rest_target",
+  "description": "",
+  "originalPit": "Net/WebProxy.xml",
+  "config": [
+    {
+      "key": "WebProxyPort",
+      "value": "8001"
+    },
+    {
+      "key": "ClientCert",
+      "value": ""
+    },
+    {
+      "key": "ClientKey",
+      "value": ""
+    },
+    {
+      "key": "CaCert",
+      "value": ""
+    },
+    {
+      "key": "CaKey",
+      "value": ""
+    },
+    {
+      "key": "ServerKey",
+      "value": ""
+    },
+    {
+      "key": "Timeout",
+      "value": "999000"
+    }
+  ],
+  "agents": [
+    {
+      "name": "Local",
+      "agentUrl": "",
+      "monitors": [
+        {
+          "monitorClass": "Syslog",
+          "name": "Syslog",
+          "map": [
+            {
+              "key": "FaultRegex",
+              "value": "(.*syntax error.*)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "weights": [],
+  "webProxy": {
+    "routes": [
+      {
+        "url": "*",
+        "mutate": true,
+        "faultOnStatusCodes": [
+          500,
+          501
+        ],
+        "headers": [
+          {
+            "name": "*",
+            "mutate": true
+          }
+        ]
+      }
+    ]
+  }
+}
