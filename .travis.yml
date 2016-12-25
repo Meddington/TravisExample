@@ -28,7 +28,7 @@ env:
   PEACH_VERBOSE=True
 
 before_script:
-- python flask_rest_target/rest_target.py
+- "nohup python flask_rest_target/rest_target.py &"
 
 script:
 - pytest --junitxml=test.xml pytest-peach/test_target.py
