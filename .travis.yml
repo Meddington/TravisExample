@@ -13,7 +13,6 @@ addons:
 install:
 - pip install -r flask_rest_target/requirements.txt
 - pip install -r cloud-generic/requirements.txt
-- pip install -r peachproxy/requirements.txt
 - python peachproxy/setup.py -q install
 - python pytest-peach/src/setup.py -q install
 
