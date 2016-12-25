@@ -14,7 +14,7 @@ install:
 - pip install -r flask_rest_target/requirements.txt
 - pip install -r cloud-generic/requirements.txt
 - "cd peachproxy ; python setup.py -q install ; cd .."
-- "cd pytest-peach/src ; python setup.py -q install ; cd .."
+- "cd pytest-peach/src ; python setup.py -q install ; cd ../.."
 
 env:
 - PEACH_SSH_HOST=52.52.169.252
