@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
 '''
-Peach CI Generic Integration Runner
+Peach CI Cloud Generic Integration Runner
 Copyright (c) 2016 Peach Fuzzer, LLC
+
+This script is used when the build/test environment only
+has outbound network access to Peach API Security.  This
+script will create a network tunnel using SSH to allow
+communication two and from the proxy.
 
 This script provides generic integration with CI systems by
 running a command that returns non-zero when testing did not pass.
@@ -13,7 +18,7 @@ preferred over this generic integration.
 '''
 
 from __future__ import print_function
-import logging, os, sys
+import logging, os, sys, re
 
 ## Configuration
 
@@ -41,6 +46,27 @@ try:
 except:
     exit_code_error = 100
 
+# SSH Identify file path
+try:
+    peach_ssh_id = os.environ["PEACH_SSH_ID"]
+except:
+    print("Error, missing PEACH_SSH_ID environment variable.")
+    sys.exit(exit_code_error)
+
+# SSH Host
+try:
+    peach_ssh_host = os.environ["PEACH_SSH_HOST"]
+except:
+    print("Error, missing PEACH_SSH_HOST environment variable.")
+    sys.exit(exit_code_error)
+
+# SSH Port
+try:
+    peach_ssh_port = int(os.environ["PEACH_SSH_PORT"])
+except:
+    print("Error, missing PEACH_SSH_PORT environment variable.")
+    sys.exit(exit_code_error)
+
 # Test automation launch script
 # Command line or None to disable
 try:
@@ -48,8 +74,6 @@ try:
 except:
     print("Error, missing PEACH_AUTOMATION_CMD environment variable.")
     sys.exit(exit_code_error)
-#except:
-#    automation_cmd = 'python c:/peach-pro.peach-web/web/SDK/examples/flask_rest_target/hand_fuzz.py'
 
 # Configuration to start
 project_config = None
@@ -59,8 +83,6 @@ try:
 except:
     print("Error, missing PEACH_CONFIG environment variable.")
     sys.exit(exit_code_error)
-#except:
-#    project_config_file = '/peach-pro.peach-web/web/SDK/examples/flask_rest_target/peach-web.project'
 
 try:
     profile = os.environ["PEACH_PROFILE"]
@@ -69,11 +91,7 @@ except:
     sys.exit(exit_code_error)
 
 # Peach API url
-try:
-    peach_api = os.environ["PEACH_API"]
-except:
-    print("Error, missing PEACH_API environment variable.")
-    sys.exit(exit_code_error)
+peach_api = "http://127.0.0.1:5000"
 
 # Peach UI URL
 try:
@@ -156,7 +174,7 @@ consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
 logger.addHandler(consoleHandler)
 
-logger.info("Peach Web CI Generic Starting")
+logger.info("Peach Web CI Cloud Generic Starting")
 
 logger.info(" ")
 logger.info("  Peach API Security UI: %s", peach_ui)
@@ -177,6 +195,11 @@ if syslog_enabled:
 
 test_process = None
 peach_jobid = None
+
+ssh_ctl_api = "peach-api.ssh.ctl"
+ssh_ctl_proxy = "peach-proxy.ssh.ctl"
+ssh_ctl_name_target = "peach-target.ssh.ctl"
+
 
 # Load configuration file if provided
 if not project_config and project_config_file:
@@ -202,13 +225,10 @@ def kill_proc_tree(pid, including_parent=True):
         parent.kill()
         parent.wait(5)
 
-def eexit(code):
-    '''Close all processes and exit with 'code'
+def shutdown():
+    '''Perform clean shutdown of CI script
     '''
     
-    logger.info("eexit(%d)", code)
-
-    #stop_job(peach_jobid)
     if test_process:
         try:
             kill_proc_tree(test_process.pid)
@@ -220,14 +240,44 @@ def eexit(code):
                 test_process.wait()
         except:
             pass
+
+    if peach_jobid:
+        peachproxy.session_teardown()
+    
+    # Close down any SSH tunnels
+    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (peach_ctl_api, peach_ssh_host, peach_ssh_port))
+    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (peach_ctl_proxy, peach_ssh_host, peach_ssh_port))
+    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (peach_ctl_target, peach_ssh_host, peach_ssh_port))
+    
+def eexit(code):
+    '''Close all processes and exit with 'code'
+    '''
+    
+    logger.info("eexit(%d)", code)
+
+    shutdown()
     
     exit(code)
 
 import atexit
 @atexit.register
 def goodbye():
-    if peach_jobid:
-        peachproxy.session_teardown()
+    '''Make sure we close out cleanly
+    '''
+    
+    shutdown()
+
+# Start SSH to Peach API
+
+# -f  Requests ssh to go to background just before command execution
+# -N  Do not execute a remote command.
+# -T  Disable pseudo-terminal allocation
+# -M  Places the ssh client into master mode for connection sharing
+# -S  Specifies the location of a control socket for connection sharing
+# -i  Selects a file from which the identity (private key) for public key authentication is read
+
+os.system("ssh -f -i %s -N -T -M -L 5000:127.0.0.1:5000 -S %s %s:%d" % (ssh_id, peach_ctl_api, peach_ssh_host, peach_ssh_port))
+os.system("ssh -f -i %s -N -T -M -R 7777:127.0.0.1:7777 -S %s %s:%d" % (ssh_id, peach_ctl_target, peach_ssh_host, peach_ssh_port))
 
 # Start job
 try:
@@ -237,9 +287,17 @@ try:
     peachproxy.session_setup(project_config, profile)
     peach_jobid = str(peachproxy.session_id())
     peach_proxy = str(peachproxy.proxy_url())
+    
+    proxy_port = int(re.search(":\d+", peach_proxy).group(0))
+    peach_proxy = "http://127.0.0.1:%d" % proxy_port
+
 except Exception as ex:
     logger.critical("Error starting session: %s", ex)
     eexit(exit_code_failure)
+
+# Start SSH to Peach Proxy
+
+os.system("ssh -f -i %s -N -T -M -L %d:127.0.0.1:%d -S %s %s:%d" % (ssh_id, proxy_port, proxy_port, peach_ctl_proxy, peach_ssh_host, peach_ssh_port))
 
 try:
     

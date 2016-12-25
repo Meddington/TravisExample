@@ -1,23 +1,36 @@
-# Example Travis Config
-#
 language: python
 python:
-  - "2.7"
-#
-# command to install dependencies
+- '2.7'
+
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq openssh
-#
-#
-install: 
-  - pip install -r custom/requirements.txt
-  - pip install -r flask_rest_target/requirements.txt
-  - pip install -r generic/requirements.txt
-  - pip install -r peachproxy/requirements.txt
-  - python peachproxy/setup.py -q install
-#
-# command to run tests
-script: pytest
-#
-# end
+- openssl aes-256-cbc -K $encrypted_4ce1da621d38_key -iv $encrypted_4ce1da621d38_iv -in id_rsa.enc -out id_rsa -d
+- sudo apt-get update -qq
+- sudo apt-get install -qq openssh
+
+addons:
+  ssh_known_hosts: 52.52.169.252
+
+install:
+- pip install -r flask_rest_target/requirements.txt
+- pip install -r cloud-generic/requirements.txt
+- pip install -r peachproxy/requirements.txt
+- python peachproxy/setup.py -q install
+- python pytest-peach/src/setup.py -q install
+
+env:
+- PEACH_SSH_HOST=52.52.169.252
+- PEACH_SSH_PORT=22
+- PEACH_SSH_ID=id_rsa
+- PEACH_CONFIG=cloud-generic/peach-web.project
+- PEACH_PROFILE=Quick
+- PEACH_UI=http://52.52.169.252:5000
+- PEACH_JUNIT=peach_output.xml
+- PEACH_AUTOMATION_CMD=pytest --peach=on pytest-peach/test_target.py
+- PEACH_VERBOSE=True
+
+before_script:
+- python flask_rest_target/rest_target.py
+
+script:
+- pytest --junitxml=test.xml pytest-peach/test_target.py
+- python cloud-generic/peach_cloud_ci_runner.py

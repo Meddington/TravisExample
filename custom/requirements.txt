@@ -1,5 +1,0 @@
-httplib2
-flask
-flask-restful
-requests
-python-simplexml

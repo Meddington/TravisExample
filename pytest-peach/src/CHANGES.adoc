@@ -1,0 +1,5 @@
+= Release Notes
+
+== 1.0 (29-08-2016)
+
+* Initial release
