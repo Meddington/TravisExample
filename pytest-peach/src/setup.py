@@ -5,7 +5,7 @@ setup(
     version = '1.0.0',
     #use_scm_version=True,
     description = 'pytest plugin for fuzzing with Peach Fuzzer Web Proxy',
-    long_description = open('README.adoc').read(),
+    long_description = "blah blah blah",
     author = 'Peach Fuzzer, LLC',
     author_email = 'contact@peachfuzzer.com',
     url = 'http://peachfuzzer.com',
