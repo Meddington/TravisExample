@@ -5,7 +5,7 @@ python:
 before_install:
 - openssl aes-256-cbc -K $encrypted_db113545913a_key -iv $encrypted_db113545913a_iv -in id_rsa.enc -out id_rsa -d
 - sudo apt-get update -qq
-- sudo apt-get install -qq openssh
+- sudo apt-get install -qq openssh-client
 
 addons:
   ssh_known_hosts: 52.52.169.252
