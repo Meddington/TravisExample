@@ -18,15 +18,7 @@ install:
 - python pytest-peach/src/setup.py -q install
 
 env:
-- PEACH_SSH_HOST=52.52.169.252 
-- PEACH_SSH_PORT=22
-- PEACH_SSH_ID=id_rsa 
-- PEACH_CONFIG=cloud-generic/peach-web.project 
-- PEACH_PROFILE=Quick 
-- PEACH_UI=http://52.52.169.252:5000
-- PEACH_JUNIT=peach_output.xml
-- PEACH_AUTOMATION_CMD="pytest --peach=on pytest-peach/test_target.py" 
-- PEACH_VERBOSE=True
+- PEACH_SSH_HOST=52.52.169.252 PEACH_SSH_PORT=22 PEACH_SSH_ID=id_rsa PEACH_CONFIG=cloud-generic/peach-web.project PEACH_PROFILE=Quick PEACH_UI=http://52.52.169.252:5000 PEACH_JUNIT=peach_output.xml PEACH_AUTOMATION_CMD="pytest --peach=on pytest-peach/test_target.py" PEACH_VERBOSE=True
 
 before_script:
 - python flask_rest_target/rest_target.py
