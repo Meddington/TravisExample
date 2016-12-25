@@ -5,7 +5,7 @@ setup(
     version = '4.1.0',
     #use_scm_version=True,
     description = 'Peach Web Proxy API module',
-    long_description = open('README.adoc').read(),
+    long_description = "blah blah blah",
     author = 'Peach Fuzzer, LLC',
     author_email = 'contact@peachfuzzer.com',
     url = 'http://peachfuzzer.com',
