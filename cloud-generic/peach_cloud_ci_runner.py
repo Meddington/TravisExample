@@ -245,9 +245,9 @@ def shutdown():
         peachproxy.session_teardown()
     
     # Close down any SSH tunnels
-    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (peach_ctl_api, peach_ssh_host, peach_ssh_port))
-    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (peach_ctl_proxy, peach_ssh_host, peach_ssh_port))
-    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (peach_ctl_target, peach_ssh_host, peach_ssh_port))
+    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (ssh_ctl_api, peach_ssh_host, peach_ssh_port))
+    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (ssh_ctl_proxy, peach_ssh_host, peach_ssh_port))
+    os.system("ssh -T -O \"exit\" -S %s %s:%d" % (ssh_ctl_target, peach_ssh_host, peach_ssh_port))
     
 def eexit(code):
     '''Close all processes and exit with 'code'
@@ -276,8 +276,8 @@ def goodbye():
 # -S  Specifies the location of a control socket for connection sharing
 # -i  Selects a file from which the identity (private key) for public key authentication is read
 
-os.system("ssh -f -i %s -N -T -M -L 5000:127.0.0.1:5000 -S %s %s:%d" % (ssh_id, peach_ctl_api, peach_ssh_host, peach_ssh_port))
-os.system("ssh -f -i %s -N -T -M -R 7777:127.0.0.1:7777 -S %s %s:%d" % (ssh_id, peach_ctl_target, peach_ssh_host, peach_ssh_port))
+os.system("ssh -f -i %s -N -T -M -L 5000:127.0.0.1:5000 -S %s %s:%d" % (ssh_id, ssh_ctl_api, peach_ssh_host, peach_ssh_port))
+os.system("ssh -f -i %s -N -T -M -R 7777:127.0.0.1:7777 -S %s %s:%d" % (ssh_id, ssh_ctl_target, peach_ssh_host, peach_ssh_port))
 
 # Start job
 try:
@@ -297,7 +297,7 @@ except Exception as ex:
 
 # Start SSH to Peach Proxy
 
-os.system("ssh -f -i %s -N -T -M -L %d:127.0.0.1:%d -S %s %s:%d" % (ssh_id, proxy_port, proxy_port, peach_ctl_proxy, peach_ssh_host, peach_ssh_port))
+os.system("ssh -f -i %s -N -T -M -L %d:127.0.0.1:%d -S %s %s:%d" % (ssh_id, proxy_port, proxy_port, ssh_ctl_proxy, peach_ssh_host, peach_ssh_port))
 
 try:
     
