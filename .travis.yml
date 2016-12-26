@@ -15,6 +15,7 @@ install:
 - pip install -r cloud-generic/requirements.txt
 - "cd peachproxy ; python setup.py -q install ; cd .."
 - "cd pytest-peach/src ; python setup.py -q install ; cd ../.."
+- "chmod a-rwx id_rsa ; chmod u+r id_rsa"
 
 env:
 - PEACH_SSH_HOST=52.52.169.252
