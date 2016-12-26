@@ -297,7 +297,7 @@ try:
     peach_jobid = str(peachproxy.session_id())
     peach_proxy = str(peachproxy.proxy_url())
     
-    proxy_port = int(re.search(":\d+", peach_proxy).group(0))
+    proxy_port = int(re.search(":(\d+)", peach_proxy).group(1))
     peach_proxy = "http://127.0.0.1:%d" % proxy_port
 
 except Exception as ex:
