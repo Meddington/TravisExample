@@ -27,7 +27,7 @@ env:
   PEACH_UI=http://52.52.169.252:5000 
   PEACH_JUNIT=peach_output.xml
   PEACH_AUTOMATION_CMD="pytest --peach=on pytest-peach/test_target.py" 
-  PEACH_VERBOSE=True
+  PEACH_VERBOSE=False
 
 before_script:
 - "nohup python flask_rest_target/rest_target.py &"
