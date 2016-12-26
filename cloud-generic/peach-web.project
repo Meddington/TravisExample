@@ -1,5 +1,18 @@
 {
   "Name": "FlaskRestTarget",
   "_UseDefaults": true,
-  "LogSinks": [ { "Address":"0.0.0.0", "Port":514 } ]
+  "LogSinks": [ { "Address":"0.0.0.0", "Port":514 } ],
+	"Routes" : [
+		{
+			"Url" : "**",
+			"Mutate" : "True",
+			"BaseUrl" : "http://127.0.0.1:8888",
+			"ApiTokens": [
+				{
+					"Name": "X-API-Key",
+					"Where": "Header",
+				}
+			]
+		}
+	]
 }
