@@ -16,15 +16,15 @@ machine:
 
   post:
     - openssl aes-256-cbc -d -in id_rsa-cipher -out id_rsa -k $KEY
-	- chmod a-rwx id_rsa ; chmod u+r
+    - chmod a-rwx id_rsa ; chmod u+r
     - python flask_rest_target/rest_target.py:
-          background: true
+        background: true
     - sleep 5
-	
+
 dependencies:
   post:
     - cd peachproxy ; python setup.py -q install ; cd ..
-	- cd pytest-peach/src ; python setup.py -q install ; cd ../..
+    - cd pytest-peach/src ; python setup.py -q install ; cd ../..
 
 test:
   override:
