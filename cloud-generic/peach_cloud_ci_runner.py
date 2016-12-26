@@ -284,7 +284,7 @@ def goodbye():
 # -i  Selects a file from which the identity (private key) for public key authentication is read
 
 logger.info("Port 5001")
-os.system("ssh -f -i %s -p %d -N -T -M -L 5001:127.0.0.1:5000 -S %s %s@%s" % (peach_ssh_id, peach_ssh_port, ssh_ctl_api, peach_ssh_user, peach_ssh_host))
+os.system("ssh -f -i %s -p %d -N -T -M -L 127.0.0.1:5001:127.0.0.1:5000 -S %s %s@%s" % (peach_ssh_id, peach_ssh_port, ssh_ctl_api, peach_ssh_user, peach_ssh_host))
 logger.info("Port 7777/8888")
 os.system("ssh -f -i %s -p %d -N -T -M -R 8888:127.0.0.1:7777 -S %s %s@%s" % (peach_ssh_id, peach_ssh_port, ssh_ctl_target, peach_ssh_user, peach_ssh_host))
 
