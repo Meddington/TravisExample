@@ -48,6 +48,13 @@ except:
 
 # SSH Identify file path
 try:
+    peach_ssh_user = os.environ["PEACH_SSH_USER"]
+except:
+    print("Error, missing PEACH_SSH_USER environment variable.")
+    sys.exit(exit_code_error)
+
+# SSH Identify file path
+try:
     peach_ssh_id = os.environ["PEACH_SSH_ID"]
 except:
     print("Error, missing PEACH_SSH_ID environment variable.")
