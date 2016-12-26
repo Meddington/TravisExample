@@ -198,7 +198,7 @@ peach_jobid = None
 
 ssh_ctl_api = "peach-api.ssh.ctl"
 ssh_ctl_proxy = "peach-proxy.ssh.ctl"
-ssh_ctl_name_target = "peach-target.ssh.ctl"
+ssh_ctl_target = "peach-target.ssh.ctl"
 
 
 # Load configuration file if provided
