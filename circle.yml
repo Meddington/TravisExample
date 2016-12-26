@@ -1,0 +1,32 @@
+machine:
+  python:
+    version: 2.7.13
+  
+  environment:
+    PEACH_SSH_HOST: 52.52.169.252
+    PEACH_SSH_PORT: 22
+    PEACH_SSH_ID: id_rsa
+    PEACH_SSH_USER: ubuntu
+    PEACH_CONFIG: cloud-generic/peach-web.project
+    PEACH_PROFILE: Quick 
+    PEACH_UI: http://52.52.169.252:5000 
+    PEACH_JUNIT: peach_output.xml
+    PEACH_AUTOMATION_CMD: pytest --peach=on pytest-peach/test_target.py
+    PEACH_VERBOSE: False
+
+  post:
+    - openssl aes-256-cbc -d -in id_rsa-cipher -out id_rsa -k $KEY
+	- chmod a-rwx id_rsa ; chmod u+r
+    - python flask_rest_target/rest_target.py:
+          background: true
+    - sleep 5
+	
+dependencies:
+  post:
+    - cd peachproxy ; python setup.py -q install ; cd ..
+	- cd pytest-peach/src ; python setup.py -q install ; cd ../..
+
+test:
+  override:
+    - pytest --junitxml=test.xml pytest-peach/test_target.py
+    - python cloud-generic/peach_cloud_ci_runner.py
