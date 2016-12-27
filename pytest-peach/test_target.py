@@ -52,6 +52,7 @@ def teardown_function(self):
 def test_users_getall():
 	get(target+'/api/users', **req_args)
 
+'''
 def test_user_create():
 	r = post(target+'/api/users',
 		 data=json.dumps({"user":"dd", "first":"mike", "last":"smith", "password":"hello"}),
@@ -72,7 +73,7 @@ def test_user_update():
 	    **req_args)
 	delete(target+'/api/users/%d' % user['user_id'], **req_args)
 	get(target+'/api/users', **req_args)
-
+'''
 
 if __name__ == "__main__":
 	print()

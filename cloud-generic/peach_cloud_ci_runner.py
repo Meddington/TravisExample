@@ -97,6 +97,12 @@ except:
     print("Error, missing PEACH_PROFILE environment variable.")
     sys.exit(exit_code_error)
 
+try:
+    ci_config_file = os.environ["PEACH_CI_CONFIG"]
+except:
+    print("Error, missing PEACH_CI_CONFIG environment variable.")
+    sys.exit(exit_code_error)
+
 # Peach API url
 peach_api = "http://127.0.0.1:5000"
 
@@ -194,8 +200,9 @@ logger.info("  exit_code_error: %d", exit_code_error)
 logger.info("  peach_api: %s", peach_api)
 logger.info("  project_config: %s", project_config)
 logger.info("  project_config_file: %s", project_config_file)
+logger.info("  ci_config_file: %s", ci_config_file)
 logger.info("  junit: %s", junit)
-logger.info("  syslog_enabled: %s", syslog_enabled )
+logger.info("  syslog_enabled: %s", syslog_enabled)
 if syslog_enabled:
     logger.info("  syslog_host: %s", syslog_host)
     logger.info("  syslog_port: %d", syslog_port)
@@ -205,8 +212,11 @@ peach_jobid = None
 
 ssh_ctl_api = "peach-api.ssh.ctl"
 ssh_ctl_proxy = "peach-proxy.ssh.ctl"
-ssh_ctl_target = "peach-target.ssh.ctl"
+ssh_ctl_targets_template = "peach-target-%d.ssh.ctl"
+ssh_ctl_targets = []
 
+with open(ci_config_file) as fd:
+    ci_config = json.load(fd)
 
 # Load configuration file if provided
 if not project_config and project_config_file:
@@ -285,8 +295,24 @@ def goodbye():
 
 logger.info("Port 5001")
 os.system("ssh -f -i %s -p %d -N -T -M -L 127.0.0.1:5000:127.0.0.1:5000 -S %s %s@%s" % (peach_ssh_id, peach_ssh_port, ssh_ctl_api, peach_ssh_user, peach_ssh_host))
-logger.info("Port 7777/8888")
-os.system("ssh -f -i %s -p %d -N -T -M -R 8888:127.0.0.1:7777 -S %s %s@%s" % (peach_ssh_id, peach_ssh_port, ssh_ctl_target, peach_ssh_user, peach_ssh_host))
+
+logger.info("Creating target tunnels...")
+
+cnt = 0
+for x in ci_config['target_tunnels']:
+    local_port = x['local']
+    remote_port = x['remote']
+    ctl = ssh_ctl_targets_template % cnt
+    
+    logger.info("  - Remote: %d  Local: 127.0.0.1:%d" % (remote_port, local_port))
+    
+    os.system("ssh -f -i %s -p %d -N -T -M -R %d:127.0.0.1:%d -S %s %s@%s" % (
+        peach_ssh_id, peach_ssh_port,
+        remote_port, local_port,
+        ctl, peach_ssh_user, peach_ssh_host))
+    
+    ssh_ctl_targets.append(ctl)
+    cnt += 1
 
 # Start job
 try:

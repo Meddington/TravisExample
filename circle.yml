@@ -10,7 +10,7 @@ machine:
     PEACH_CONFIG: cloud-generic/peach-web.project
     PEACH_PROFILE: Quick 
     PEACH_UI: http://52.52.169.252:5000 
-    PEACH_JUNIT: peach_output.xml
+    PEACH_JUNIT: $CIRCLE_TEST_REPORTS/peach-web/peach_output.xml
     PEACH_AUTOMATION_CMD: pytest --peach=on pytest-peach/test_target.py
     PEACH_VERBOSE: False
 
@@ -29,6 +29,8 @@ dependencies:
 
 test:
   override:
-    - pytest --junitxml=test.xml pytest-peach/test_target.py
-    - python cloud-generic/peach_cloud_ci_runner.py:
-        timeout: 10800
+    - mkdir -p $CIRCLE_TEST_REPORTS/pytest
+    - pytest --junitxml=$CIRCLE_TEST_REPORTS/pytest/test.xml pytest-peach/test_target.py
+#    - mkdir -p $CIRCLE_TEST_REPORTS/peach-web
+#    - python cloud-generic/peach_cloud_ci_runner.py:
+#        timeout: 10800
