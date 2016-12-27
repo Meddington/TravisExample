@@ -17,7 +17,7 @@ machine:
 dependencies:
   pre:
     - openssl aes-256-cbc -d -in id_rsa-cipher -out id_rsa -k $KEY
-    - chmod a-rwx id_rsa ; chmod u+r
+    - chmod a-rwx id_rsa ; chmod u+r id_rsa
   post:
     - cd peachproxy ; python setup.py -q install ; cd ..
     - cd pytest-peach/src ; python setup.py -q install ; cd ../..
