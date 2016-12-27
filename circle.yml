@@ -16,8 +16,7 @@ machine:
 
 dependencies:
   pre:
-    - cd $HOME
-    - openssl aes-256-cbc -d -in $HOME/id_rsa-cipher -out $HOME/id_rsa -k $KEY
+    - openssl aes-256-cbc -d -in id_rsa-cipher -out id_rsa -k $KEY
     - chmod a-rwx id_rsa ; chmod u+r
   post:
     - cd peachproxy ; python setup.py -q install ; cd ..
