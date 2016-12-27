@@ -2,7 +2,7 @@
 	"target_tunnels": [
 		{
 			"local" : 7777,
-			"remote" : 8888,
+			"remote" : 8888
 		}
 	]
 }
