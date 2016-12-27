@@ -15,7 +15,8 @@ machine:
     PEACH_VERBOSE: False
 
   post:
-    - openssl aes-256-cbc -d -in id_rsa-cipher -out id_rsa -k $KEY
+    - cd $HOME
+    - openssl aes-256-cbc -d -in $HOME/id_rsa-cipher -out $HOME/id_rsa -k $KEY
     - chmod a-rwx id_rsa ; chmod u+r
     - python flask_rest_target/rest_target.py:
         background: true
