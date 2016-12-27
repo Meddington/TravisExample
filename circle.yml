@@ -8,7 +8,8 @@ machine:
     PEACH_SSH_ID: id_rsa
     PEACH_SSH_USER: ubuntu
     PEACH_CONFIG: cloud-generic/peach-web.project
-    PEACH_PROFILE: Quick 
+    PEACH_PROFILE: Quick
+	PEACH_CI_CONFIG: peach-ci.json
     PEACH_UI: http://52.52.169.252:5000 
     PEACH_JUNIT: $CIRCLE_TEST_REPORTS/peach-web/peach_output.xml
     PEACH_AUTOMATION_CMD: pytest --peach=on pytest-peach/test_target.py
