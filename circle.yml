@@ -19,6 +19,8 @@ dependencies:
     - openssl aes-256-cbc -d -in id_rsa-cipher -out id_rsa -k $KEY
     - chmod a-rwx id_rsa ; chmod u+r id_rsa
   post:
+    - pip install -r flask_rest_target/requirements.txt
+    - pip install -r cloud-generic/requirements.txt
     - cd peachproxy ; python setup.py -q install ; cd ..
     - cd pytest-peach/src ; python setup.py -q install ; cd ../..
     - python flask_rest_target/rest_target.py:
