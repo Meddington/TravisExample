@@ -52,12 +52,6 @@ def teardown_function(self):
 def test_users_getall():
 	get(target+'/api/users', **req_args)
 
-def test_failure():
-	assert 1 == 2
-
-def test_failure2():
-	assert 1 == 3
-
 
 '''
 def test_user_create():

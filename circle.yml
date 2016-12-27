@@ -31,6 +31,6 @@ test:
   override:
     - mkdir -p $CIRCLE_TEST_REPORTS/pytest
     - pytest --junitxml=$CIRCLE_TEST_REPORTS/pytest/test.xml pytest-peach/test_target.py
-#    - mkdir -p $CIRCLE_TEST_REPORTS/peach-web
-#    - python cloud-generic/peach_cloud_ci_runner.py:
-#        timeout: 10800
+    - mkdir -p $CIRCLE_TEST_REPORTS/peach-web
+    - python cloud-generic/peach_cloud_ci_runner.py:
+        timeout: 10800
