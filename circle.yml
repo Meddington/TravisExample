@@ -30,6 +30,5 @@ dependencies:
 test:
   override:
     - pytest --junitxml=test.xml pytest-peach/test_target.py
-    - python cloud-generic/peach_cloud_ci_runner.py
-	    timeout: 10800
-
+    - python cloud-generic/peach_cloud_ci_runner.py:
+        timeout: 10800
